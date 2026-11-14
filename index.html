@@ -16,19 +16,84 @@
     <span>Opportunity Atlas</span>
   </header>
 
+  <!-- ───────── Filter bar ───────── -->
+  <div class="filterbar" id="filterbar">
+    <div class="filterbar__row filterbar__row--primary">
+      <div class="segmented" role="group" aria-label="Result type">
+        <button class="segmented__btn is-active" data-kind="both" type="button">Both</button>
+        <button class="segmented__btn" data-kind="freelancers" type="button">Talent</button>
+        <button class="segmented__btn" data-kind="projects" type="button">Projects</button>
+      </div>
+
+      <input
+        type="search"
+        class="filterbar__search"
+        id="search"
+        placeholder="Search skills, titles, people…"
+        autocomplete="off"
+        spellcheck="false"
+      />
+
+      <button class="filterbar__toggle" id="remote-toggle" type="button" aria-pressed="false">
+        <span class="dot" aria-hidden="true"></span>
+        <span>Remote only</span>
+      </button>
+
+      <button
+        class="filterbar__expand"
+        id="filters-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="filterbar-advanced"
+      >
+        <span>Filters</span>
+        <span class="filterbar__count" id="filter-count" hidden>0</span>
+      </button>
+    </div>
+
+    <div class="filterbar__row filterbar__row--advanced" id="filterbar-advanced" hidden>
+      <div class="filterbar__group">
+        <label class="filterbar__label">Categories</label>
+        <div class="chips" id="category-chips"></div>
+      </div>
+
+      <div class="filterbar__group filterbar__group--budget">
+        <label class="filterbar__label" for="budget">
+          <span>Min budget</span>
+          <span class="filterbar__value" id="budget-value">Any</span>
+        </label>
+        <input type="range" id="budget" min="0" max="10000" step="250" value="0" />
+      </div>
+    </div>
+  </div>
+
+  <!-- ───────── Status pill ───────── -->
   <div class="hud-status" id="status" aria-live="polite">
     <span>Loading the atlas…</span>
   </div>
 
-  <aside class="hud-card" id="card" hidden role="dialog" aria-label="City details">
-    <button class="hud-card__close" id="card-close" aria-label="Close">×</button>
-    <h2 class="hud-card__title" id="card-title"></h2>
-    <p  class="hud-card__subtitle" id="card-subtitle"></p>
-    <ul class="hud-card__stats">
-      <li><strong id="card-freelancers">0</strong> freelancers</li>
-      <li><strong id="card-projects">0</strong> projects</li>
-    </ul>
-    <p class="hud-card__hint">Detail panel with talents &amp; projects lands in Chat 3.</p>
+  <!-- ───────── City panel ───────── -->
+  <aside class="panel" id="panel" hidden role="dialog" aria-label="City details">
+    <header class="panel__head">
+      <div class="panel__titles">
+        <h2 class="panel__title" id="panel-title"></h2>
+        <p class="panel__subtitle" id="panel-subtitle"></p>
+      </div>
+      <button class="panel__close" id="panel-close" aria-label="Close" type="button">×</button>
+    </header>
+
+    <div class="panel__tabs" role="tablist">
+      <button class="panel__tab is-active" data-tab="talent" role="tab" aria-selected="true" type="button">
+        Talent <span class="panel__tab-count" id="talent-count">0</span>
+      </button>
+      <button class="panel__tab" data-tab="projects" role="tab" aria-selected="false" type="button">
+        Projects <span class="panel__tab-count" id="projects-count">0</span>
+      </button>
+    </div>
+
+    <div class="panel__body" id="panel-body">
+      <p class="panel__empty">Loading…</p>
+    </div>
   </aside>
 
   <!-- libs (UMD, load before app.js) -->
