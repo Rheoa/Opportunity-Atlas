@@ -1,8 +1,11 @@
-/* Opportunity Atlas — app.js (Chat 3)
+/* Opportunity Atlas — app.js (Chat 3 + Chat 4 fixes)
  * Vanilla JS, no build step. Relies on:
  *   window.Globe                 (globe.gl UMD)
  *   window.supabase.createClient (supabase-js UMD)
  *   window.ATLAS_CONFIG          (config.js)
+ *
+ * Load order in index.html MUST be:
+ *   config.js → app.js → auth.js → forms.js
  */
 (async function main() {
   'use strict';
@@ -51,7 +54,7 @@
   );
 
   // ---------------------------------------------------------------
-  // 2. State
+  // 2. State + request tokens (must precede boot)
   // ---------------------------------------------------------------
   const state = {
     categories: [],
@@ -67,6 +70,28 @@
     city: null, // { city_id, city_name, country, lat, lng, ... }
     cityData: { talent: [], projects: [] },
     activeTab: 'talent',
+  };
+
+  // Request tokens — MUST be declared before boot() calls
+  // loadMarkers() / loadCityData(), otherwise `++token` hits TDZ.
+  let markerReqToken = 0;
+  let cityReqToken = 0;
+
+  // Expose a tiny API so auth.js and forms.js can reach the client
+  // and trigger a globe refresh after a profile/project save.
+  window.atlas = {
+    supabase,
+    refresh() {
+      loadMarkers();
+      if (state.city) loadCityData(state.city.city_id);
+    },
+    toast(msg, kind = 'ok') {
+      const el = document.createElement('div');
+      el.className = `toast toast--${kind}`;
+      el.textContent = msg;
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 3200);
+    },
   };
 
   // ---------------------------------------------------------------
@@ -251,7 +276,6 @@
   // =============================================================
   // DATA — markers
   // =============================================================
-  let markerReqToken = 0;
   async function loadMarkers() {
     const token = ++markerReqToken;
     const bar = document.getElementById('filterbar');
@@ -313,7 +337,6 @@
   // =============================================================
   // DATA — city detail
   // =============================================================
-  let cityReqToken = 0;
   async function loadCityData(cityId) {
     const token = ++cityReqToken;
     const [talent, projects] = await Promise.all([
