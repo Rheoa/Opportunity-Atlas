@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Opportunity Atlas — Not found</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex" />
+  <meta http-equiv="refresh" content="2; url=./" />
+  <style>
+    html, body {
+      margin: 0;
+      height: 100%;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle at 50% 35%, #10131c 0%, #05070c 70%);
+      color: #e6e9f2;
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    }
+    .box { text-align: center; }
+    .mark { color: #7c9cff; font-size: 40px; filter: drop-shadow(0 0 12px rgba(124,156,255,0.7)); }
+    h1 { margin: 12px 0 4px; font-size: 18px; font-weight: 600; }
+    p  { margin: 0; font-size: 13px; color: #8d93a6; }
+    a  { color: #7c9cff; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <div class="mark" aria-hidden="true">◍</div>
+    <h1>Page not found</h1>
+    <p>Returning to the atlas in a moment… <a href="./">Go now</a></p>
+  </div>
+  <script>
+    // Relative redirect works for both /repo/ and custom domains.
+    setTimeout(function () { location.replace('./'); }, 1500);
+  </script>
+</body>
+</html>
