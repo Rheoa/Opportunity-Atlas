@@ -16,7 +16,28 @@
     <span>Opportunity Atlas</span>
   </header>
 
-  <!-- ───────── Filter bar ───────── -->
+  <!-- top-right user chip -->
+  <div class="hud-user" id="hud-user">
+    <div id="hud-user-guest">
+      <button class="btn btn--primary btn--sm" id="btn-signin" type="button">Sign in</button>
+    </div>
+    <div id="hud-user-signed" hidden>
+      <button class="hud-user__chip" id="hud-user-chip" type="button"
+              aria-haspopup="menu" aria-expanded="false">
+        <span class="hud-user__avatar" id="hud-user-avatar">?</span>
+        <span class="hud-user__name" id="hud-user-name"></span>
+        <span class="hud-user__caret" aria-hidden="true">▾</span>
+      </button>
+      <div class="hud-user__menu" id="hud-user-menu" role="menu" hidden>
+        <button type="button" role="menuitem" id="btn-edit-profile">Edit profile</button>
+        <button type="button" role="menuitem" id="btn-post-project">Post a project</button>
+        <div class="hud-user__sep"></div>
+        <button type="button" role="menuitem" id="btn-signout" class="is-danger">Sign out</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- filter bar (unchanged from Chat 3) -->
   <div class="filterbar" id="filterbar">
     <div class="filterbar__row filterbar__row--primary">
       <div class="segmented" role="group" aria-label="Result type">
@@ -24,39 +45,21 @@
         <button class="segmented__btn" data-kind="freelancers" type="button">Talent</button>
         <button class="segmented__btn" data-kind="projects" type="button">Projects</button>
       </div>
-
-      <input
-        type="search"
-        class="filterbar__search"
-        id="search"
-        placeholder="Search skills, titles, people…"
-        autocomplete="off"
-        spellcheck="false"
-      />
-
+      <input type="search" class="filterbar__search" id="search"
+             placeholder="Search skills, titles, people…" autocomplete="off" spellcheck="false" />
       <button class="filterbar__toggle" id="remote-toggle" type="button" aria-pressed="false">
-        <span class="dot" aria-hidden="true"></span>
-        <span>Remote only</span>
+        <span class="dot" aria-hidden="true"></span><span>Remote only</span>
       </button>
-
-      <button
-        class="filterbar__expand"
-        id="filters-toggle"
-        type="button"
-        aria-expanded="false"
-        aria-controls="filterbar-advanced"
-      >
-        <span>Filters</span>
-        <span class="filterbar__count" id="filter-count" hidden>0</span>
+      <button class="filterbar__expand" id="filters-toggle" type="button"
+              aria-expanded="false" aria-controls="filterbar-advanced">
+        <span>Filters</span><span class="filterbar__count" id="filter-count" hidden>0</span>
       </button>
     </div>
-
     <div class="filterbar__row filterbar__row--advanced" id="filterbar-advanced" hidden>
       <div class="filterbar__group">
         <label class="filterbar__label">Categories</label>
         <div class="chips" id="category-chips"></div>
       </div>
-
       <div class="filterbar__group filterbar__group--budget">
         <label class="filterbar__label" for="budget">
           <span>Min budget</span>
@@ -67,12 +70,11 @@
     </div>
   </div>
 
-  <!-- ───────── Status pill ───────── -->
   <div class="hud-status" id="status" aria-live="polite">
     <span>Loading the atlas…</span>
   </div>
 
-  <!-- ───────── City panel ───────── -->
+  <!-- city panel (unchanged from Chat 3) -->
   <aside class="panel" id="panel" hidden role="dialog" aria-label="City details">
     <header class="panel__head">
       <div class="panel__titles">
@@ -81,7 +83,6 @@
       </div>
       <button class="panel__close" id="panel-close" aria-label="Close" type="button">×</button>
     </header>
-
     <div class="panel__tabs" role="tablist">
       <button class="panel__tab is-active" data-tab="talent" role="tab" aria-selected="true" type="button">
         Talent <span class="panel__tab-count" id="talent-count">0</span>
@@ -90,11 +91,186 @@
         Projects <span class="panel__tab-count" id="projects-count">0</span>
       </button>
     </div>
-
     <div class="panel__body" id="panel-body">
       <p class="panel__empty">Loading…</p>
     </div>
   </aside>
+
+  <!-- ─────────── AUTH MODAL ─────────── -->
+  <div class="modal" id="modal-auth" hidden>
+    <div class="modal__backdrop"></div>
+    <div class="modal__dialog">
+      <header class="modal__head">
+        <h2 class="modal__title">Welcome to Opportunity Atlas</h2>
+        <button class="modal__close" id="modal-auth-close" aria-label="Close" type="button">×</button>
+      </header>
+      <div class="modal__tabs">
+        <button class="modal__tab is-active" id="tab-signin" type="button">Sign in</button>
+        <button class="modal__tab" id="tab-signup" type="button">Create account</button>
+      </div>
+      <form class="form" id="form-auth" novalidate>
+        <label class="field">
+          <span class="field__label">Email</span>
+          <input class="field__input" name="email" id="auth-email" type="email" required autocomplete="email" />
+        </label>
+        <label class="field">
+          <span class="field__label">Password</span>
+          <input class="field__input" name="password" id="auth-password" type="password"
+                 required autocomplete="current-password" minlength="6" />
+        </label>
+        <p class="form__error" id="auth-error" hidden></p>
+        <p class="form__message" id="auth-message" hidden></p>
+        <div class="form__actions">
+          <button type="submit" class="btn btn--primary btn--full" id="auth-submit">Sign in</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ─────────── EDIT PROFILE MODAL ─────────── -->
+  <div class="modal" id="modal-profile" hidden>
+    <div class="modal__backdrop"></div>
+    <div class="modal__dialog modal__dialog--wide">
+      <header class="modal__head">
+        <h2 class="modal__title">Edit profile</h2>
+        <button class="modal__close" data-close aria-label="Close" type="button">×</button>
+      </header>
+      <form class="form" id="form-profile" novalidate>
+        <div class="form__grid">
+          <label class="field">
+            <span class="field__label">Display name *</span>
+            <input class="field__input" name="display_name" type="text" required maxlength="80" />
+          </label>
+          <label class="field">
+            <span class="field__label">Username *</span>
+            <input class="field__input" name="username" type="text" required
+                   pattern="[a-z0-9_]{3,30}" maxlength="30" autocapitalize="off" />
+          </label>
+          <label class="field field--full">
+            <span class="field__label">Headline</span>
+            <input class="field__input" name="headline" type="text" maxlength="140"
+                   placeholder="e.g. Full-stack engineer, React & Node" />
+          </label>
+          <label class="field field--full">
+            <span class="field__label">Bio</span>
+            <textarea class="field__textarea" name="bio" rows="3" maxlength="600"></textarea>
+          </label>
+          <label class="field">
+            <span class="field__label">City</span>
+            <select class="field__select" name="city_id" id="profile-city"></select>
+          </label>
+          <label class="field">
+            <span class="field__label">Hourly rate</span>
+            <div class="field__inline">
+              <input class="field__input" name="hourly_rate" type="number" min="0" step="1" placeholder="—" />
+              <select class="field__select" name="currency">
+                <option value="USD">USD</option><option value="EUR">EUR</option>
+                <option value="GBP">GBP</option><option value="JPY">JPY</option>
+                <option value="INR">INR</option>
+              </select>
+            </div>
+          </label>
+          <div class="field field--full">
+            <span class="field__label">Categories</span>
+            <div class="chips" id="profile-categories"></div>
+          </div>
+          <label class="field field--full">
+            <span class="field__label">Skills <span class="field__hint">(comma-separated)</span></span>
+            <input class="field__input" name="skills" type="text" placeholder="react, typescript, figma" />
+          </label>
+          <label class="field">
+            <span class="field__label">Website</span>
+            <input class="field__input" name="website" type="text" placeholder="https://" />
+          </label>
+          <label class="field">
+            <span class="field__label">GitHub</span>
+            <input class="field__input" name="github" type="text" />
+          </label>
+          <label class="field">
+            <span class="field__label">LinkedIn</span>
+            <input class="field__input" name="linkedin" type="text" />
+          </label>
+          <label class="field">
+            <span class="field__label">Avatar URL</span>
+            <input class="field__input" name="avatar_url" type="text" placeholder="https://…" />
+          </label>
+          <label class="field field--checkbox field--full">
+            <input type="checkbox" name="open_to_work" />
+            <span>Open to work — show me in city panels</span>
+          </label>
+        </div>
+        <p class="form__error" id="profile-error" hidden></p>
+        <div class="form__actions">
+          <button type="button" class="btn btn--ghost" data-close>Cancel</button>
+          <button type="submit" class="btn btn--primary" id="profile-submit">Save profile</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ─────────── POST PROJECT MODAL ─────────── -->
+  <div class="modal" id="modal-project" hidden>
+    <div class="modal__backdrop"></div>
+    <div class="modal__dialog modal__dialog--wide">
+      <header class="modal__head">
+        <h2 class="modal__title">Post a project</h2>
+        <button class="modal__close" data-close aria-label="Close" type="button">×</button>
+      </header>
+      <form class="form" id="form-project" novalidate>
+        <div class="form__grid">
+          <label class="field field--full">
+            <span class="field__label">Title *</span>
+            <input class="field__input" name="title" type="text" required minlength="3" maxlength="140" />
+          </label>
+          <label class="field field--full">
+            <span class="field__label">Description</span>
+            <textarea class="field__textarea" name="description" rows="4" maxlength="2000"
+                      placeholder="Scope, deliverables, timeline…"></textarea>
+          </label>
+          <label class="field">
+            <span class="field__label">City</span>
+            <select class="field__select" name="city_id" id="project-city"></select>
+          </label>
+          <label class="field">
+            <span class="field__label">Deadline</span>
+            <input class="field__input" name="deadline" type="date" />
+          </label>
+          <label class="field">
+            <span class="field__label">Min budget</span>
+            <input class="field__input" name="budget_min" type="number" min="0" step="1" placeholder="—" />
+          </label>
+          <label class="field">
+            <span class="field__label">Max budget</span>
+            <div class="field__inline">
+              <input class="field__input" name="budget_max" type="number" min="0" step="1" placeholder="—" />
+              <select class="field__select" name="currency">
+                <option value="USD">USD</option><option value="EUR">EUR</option>
+                <option value="GBP">GBP</option><option value="JPY">JPY</option>
+                <option value="INR">INR</option>
+              </select>
+            </div>
+          </label>
+          <div class="field field--full">
+            <span class="field__label">Categories</span>
+            <div class="chips" id="project-categories"></div>
+          </div>
+          <label class="field field--full">
+            <span class="field__label">Skills <span class="field__hint">(comma-separated)</span></span>
+            <input class="field__input" name="skills" type="text" />
+          </label>
+          <label class="field field--checkbox field--full">
+            <input type="checkbox" name="is_remote" />
+            <span>Remote-friendly</span>
+          </label>
+        </div>
+        <p class="form__error" id="project-error" hidden></p>
+        <div class="form__actions">
+          <button type="button" class="btn btn--ghost" data-close>Cancel</button>
+          <button type="submit" class="btn btn--primary" id="project-submit">Post project</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- libs (UMD, load before app.js) -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -103,5 +279,7 @@
   <!-- our scripts -->
   <script src="./config.js"></script>
   <script src="./app.js"></script>
+  <script src="./auth.js"></script>
+  <script src="./forms.js"></script>
 </body>
 </html>
